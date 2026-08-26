@@ -1,0 +1,48 @@
+{
+    "url": "",
+    "output_format": "mujoco",
+    "output_filename": "edulite_a3_raw",
+    "assets_directory": "meshes",
+    "robot_name": "edulite_a3",
+    "draw_frames": false,
+    "no_dynamics": false,
+    "joint_properties": {
+        "shoulder_pan": {
+            "range": true,
+            "limits": [-2.79253, 2.79253]
+        },
+        "shoulder_lift": {
+            "range": true,
+            "limits": [0.0, 3.66519]
+        },
+        "elbow_flex": {
+            "range": true,
+            "limits": [-4.01426, 0.0]
+        },
+        "wrist_flex": {
+            "range": true,
+            "limits": [-1.5708, 1.5708]
+        },
+        "wrist_yaw": {
+            "range": true,
+            "limits": [-1.5708, 1.5708]
+        },
+        "wrist_roll": {
+            "range": true,
+            "limits": [-1.5708, 1.5708]
+        }
+    },
+    "solarian": {
+        "dof_mates": [],
+        "base_dof": "shoulder_pan",
+        "output_xml": "../edulite_a3.xml",
+        "meshdir": "edulite_a3_description/meshes",
+        "density": 1400,
+        "ee_site": {
+            "name": "gripper",
+            "site": "flange",
+            "offset": [0.0, 0.0, 0.0],
+            "quat": [1.0, 0.0, 0.0, 0.0]
+        }
+    }
+}

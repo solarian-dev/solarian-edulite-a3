@@ -1,0 +1,33 @@
+[project]
+name = "solarian-edulite-a3"
+version = "0.1.0"
+description = "EDULITE A3 arm and gripper modules for the Solarian robotics framework"
+authors = [
+    {name = "Solarian Contributors", email = "solarian@example.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "solarian>=0.1.0",
+    "solarian-robstride>=0.1.0",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["solarian_edulite_a3*"]
+
+[tool.setuptools.package-data]
+solarian_edulite_a3 = [
+    "conf.yaml",
+    "conf_arm.yaml",
+    "conf_gripper.yaml",
+    "assets/edulite_a3.xml",
+    "assets/edulite_a3_description/config.json",
+]
+
+[project.entry-points."solarian.modules"]
+edulite-a3-arm = "solarian_edulite_a3.arm:EduliteA3ArmModule"
+edulite-a3-gripper = "solarian_edulite_a3.gripper:EduliteA3GripperModule"
