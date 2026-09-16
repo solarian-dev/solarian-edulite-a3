@@ -65,13 +65,13 @@ When the assembly is ready:
 solarian onshape-export plugins/solarian-edulite-a3/solarian_edulite_a3/assets/edulite_a3_description
 ```
 
-Then `calibrate-module` and `calibrate-ik`.
+Then `solarian calibrate`.
 
 ## Hardware
 
 - Robstride USB-CAN adapter (CH340): see `solarian-robstride` README.
 - CAN IDs 1–6 on the arm, ID 7 on the gripper.
 - Set mechanical zero (adapter GUI or bus set-zero) before the first
-  `calibrate-module` sweep.
+  `solarian calibrate` sweep.
 - Wrist motors: YAML `model: el05` by default; switch to `rs05` if that is
   what is installed.

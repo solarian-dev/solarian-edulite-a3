@@ -8,116 +8,55 @@ frequency: 90
 interpolator_type: pose
 drive_waypoints: true
 max_speed: [0.25, 0.6]
-calibration_file: .cache/calibration/edulite_a3_arm.json
 
 # Vendor joint limits (radians) used for sim: until OnShape export replaces
 # the kinematics MJCF. drive_mode 1 matches SDK direction -1.
 actuators:
     shoulder_pan:
         id: 1
-        model: rs00
         port: ${actuator_port}
-        type: robstride
         mode: range_m100_100
-        sim:
-            joint: "arm/shoulder_pan"
-            actuator: "arm/shoulder_pan"
-            range_min: -2.79253
-            range_max: 2.79253
-            drive_mode: 1
+        sim_joint: "arm/shoulder_pan"
+        sim_range_min: -2.792526803
+        sim_range_max: 2.792526803
+        sim_drive_mode: 1
     shoulder_lift:
         id: 2
-        model: rs00
         port: ${actuator_port}
-        type: robstride
         mode: range_m100_100
-        sim:
-            joint: "arm/shoulder_lift"
-            actuator: "arm/shoulder_lift"
-            range_min: 0.0
-            range_max: 3.66519
-            drive_mode: 0
+        sim_joint: "arm/shoulder_lift"
+        sim_range_min: 0
+        sim_range_max: 3.438298626
+        sim_drive_mode: 0
     elbow_flex:
         id: 3
-        model: rs00
         port: ${actuator_port}
-        type: robstride
         mode: range_m100_100
-        sim:
-            joint: "arm/elbow_flex"
-            actuator: "arm/elbow_flex"
-            range_min: -4.01426
-            range_max: 0.0
-            drive_mode: 1
+        sim_joint: "arm/elbow_flex"
+        sim_range_min: 0
+        sim_range_max: 3.628539515
+        sim_drive_mode: 1
     wrist_flex:
         id: 4
-        model: el05
         port: ${actuator_port}
-        type: robstride
         mode: range_m100_100
-        sim:
-            joint: "arm/wrist_flex"
-            actuator: "arm/wrist_flex"
-            range_min: -1.5708
-            range_max: 1.5708
-            drive_mode: 0
+        sim_joint: "arm/wrist_flex"
+        sim_range_min: -0.6702064328
+        sim_range_max: 2.345722515
+        sim_drive_mode: 0
     wrist_yaw:
         id: 5
-        model: el05
         port: ${actuator_port}
-        type: robstride
         mode: range_m100_100
-        sim:
-            joint: "arm/wrist_yaw"
-            actuator: "arm/wrist_yaw"
-            range_min: -1.5708
-            range_max: 1.5708
-            drive_mode: 1
+        sim_joint: "arm/wrist_yaw"
+        sim_range_min: -1.570796327
+        sim_range_max: 1.570796327
+        sim_drive_mode: 1
     wrist_roll:
         id: 6
-        model: el05
         port: ${actuator_port}
-        type: robstride
         mode: range_m100_100
-        sim:
-            joint: "arm/wrist_roll"
-            actuator: "arm/wrist_roll"
-            range_min: -1.5708
-            range_max: 1.5708
-            drive_mode: 0
-    x:
-        id: 0
-        model: ik_cartesian
-        port: ${actuator_port}
-        type: ik_cartesian
-        mode: raw
-    y:
-        id: 1
-        model: ik_cartesian
-        port: ${actuator_port}
-        type: ik_cartesian
-        mode: raw
-    z:
-        id: 2
-        model: ik_cartesian
-        port: ${actuator_port}
-        type: ik_cartesian
-        mode: raw
-    rx:
-        id: 3
-        model: ik_cartesian
-        port: ${actuator_port}
-        type: ik_cartesian
-        mode: raw
-    ry:
-        id: 4
-        model: ik_cartesian
-        port: ${actuator_port}
-        type: ik_cartesian
-        mode: raw
-    rz:
-        id: 5
-        model: ik_cartesian
-        port: ${actuator_port}
-        type: ik_cartesian
-        mode: raw
+        sim_joint: "arm/wrist_roll"
+        sim_range_min: -3.141592654
+        sim_range_max: 3.141592654
+        sim_drive_mode: 0

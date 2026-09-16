@@ -5,8 +5,6 @@ from __future__ import annotations
 import logging
 import time
 
-import numpy as np
-
 from solarian.core.arm_module import ArmModule
 from solarian.core.data import PosData
 from solarian.core.ik import CartesianIKActuator, MinkIK
@@ -29,12 +27,12 @@ IK_JOINTS = [
 class EduliteA3ArmModule(ArmModule):
     """EL-A3 arm: six Robstride joints plus Cartesian IK via mink / MuJoCo."""
 
-    shoulder_pan = RobstrideServo()
-    shoulder_lift = RobstrideServo()
-    elbow_flex = RobstrideServo()
-    wrist_flex = RobstrideServo()
-    wrist_yaw = RobstrideServo()
-    wrist_roll = RobstrideServo()
+    shoulder_pan = RobstrideServo(model="rs00")
+    shoulder_lift = RobstrideServo(model="rs00")
+    elbow_flex = RobstrideServo(model="rs00")
+    wrist_flex = RobstrideServo(model="el05")
+    wrist_yaw = RobstrideServo(model="el05")
+    wrist_roll = RobstrideServo(model="el05")
 
     x = CartesianIKActuator()
     y = CartesianIKActuator()
@@ -50,11 +48,6 @@ class EduliteA3ArmModule(ArmModule):
         position_cost=1.0,
         orientation_cost=1.0,
     )
-
-    @property
-    def home_q(self):
-        """Mechanical zero in radians (after Type 6 set-zero)."""
-        return np.zeros(len(self._ik_joint_names()), dtype=float)
 
     def initialize(self):
         super().initialize()
