@@ -13,7 +13,7 @@ from solarian_robstride.actuator import RobstrideServo
 
 logger = logging.getLogger(__name__)
 
-# Same names as SO-106. CAN IDs 1-6 stay in YAML; MinkIK maps 1:1 onto MJCF.
+# Same names as Solarian Arm 1. CAN IDs 1-6 stay in YAML; MinkIK maps 1:1 onto MJCF.
 IK_JOINTS = [
     "shoulder_pan",
     "shoulder_lift",

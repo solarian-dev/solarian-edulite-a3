@@ -1,6 +1,6 @@
 # solarian-edulite-a3
 
-EDULITE A3 arm and gripper modules for Solarian. Joints use the SO-106 names
+EDULITE A3 arm and gripper modules for Solarian. Joints use the Solarian Arm 1 names
 (`shoulder_pan`, `shoulder_lift`, `elbow_flex`, `wrist_flex`, `wrist_yaw`,
 `wrist_roll`, `gripper`). Motors are Robstride RS00 / EL05 on one CAN bus;
 this plugin imports `RobstrideServo` from `solarian-robstride`.
@@ -24,7 +24,7 @@ Default YAML lives at `solarian_edulite_a3/conf_arm.yaml` and
 `right_arm.yaml` / `right_gripper.yaml`) and set the same `port` so the
 USB-CAN adapter is shared.
 
-Attach on a `Robot` the same way SO-106 does:
+Attach on a `Robot` the same way Solarian Arm 1 does:
 
 ```python
 from solarian.core.robot import Robot
