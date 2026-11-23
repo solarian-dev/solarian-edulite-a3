@@ -10,43 +10,43 @@
         "shoulder_pan": {
             "range": true,
             "limits": [
-                -2.792526803190927,
-                2.792526803190927
+                -2.79253,
+                2.79253
             ]
         },
         "shoulder_lift": {
             "range": true,
             "limits": [
-                0.0,
-                3.4382986264288293
+                -4.22926e-15,
+                3.4383
             ]
         },
         "elbow_flex": {
             "range": true,
             "limits": [
                 0.0,
-                3.6285395148962114
+                3.62854
             ]
         },
         "wrist_flex": {
             "range": true,
             "limits": [
-                -0.6702064327658225,
-                2.345722514680379
+                -1.40848,
+                1.48004
             ]
         },
         "wrist_yaw": {
             "range": true,
             "limits": [
-                -1.5707963267948966,
-                1.5707963267948966
+                -1.5708,
+                1.5708
             ]
         },
         "wrist_roll": {
             "range": true,
             "limits": [
-                -3.1415926535897922,
-                3.141592653589794
+                -3.14159,
+                3.14159
             ]
         }
     },
@@ -55,21 +55,6 @@
         "base_dof": "shoulder_pan",
         "output_xml": "../edulite_a3.xml",
         "meshdir": "edulite_a3_description/meshes",
-        "density": 1400,
-        "ee_site": {
-            "name": "gripper",
-            "site": "flange",
-            "offset": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "quat": [
-                1.0,
-                0.0,
-                0.0,
-                0.0
-            ]
-        }
+        "density": 1400
     }
 }

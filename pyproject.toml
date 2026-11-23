@@ -12,6 +12,13 @@ dependencies = [
     "solarian-robstride>=0.1.0",
 ]
 
+[project.optional-dependencies]
+# The servo SDKs, for the machine wired to the arm. Without them the modules
+# still import, so a relay or controller can build the robot's schema.
+hardware = [
+    "solarian-robstride[hardware]>=0.1.0",
+]
+
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
@@ -21,13 +28,11 @@ include = ["solarian_edulite_a3*"]
 
 [tool.setuptools.package-data]
 solarian_edulite_a3 = [
-    "conf.yaml",
-    "conf_arm.yaml",
-    "conf_gripper.yaml",
+    "templates/modules/*.yaml",
     "assets/edulite_a3.xml",
     "assets/edulite_a3_description/config.json",
+    "assets/edulite_a3_description/meshes/*.stl",
 ]
 
 [project.entry-points."solarian.modules"]
 edulite-a3-arm = "solarian_edulite_a3.arm:EduliteA3ArmModule"
-edulite-a3-gripper = "solarian_edulite_a3.gripper:EduliteA3GripperModule"

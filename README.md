@@ -1,15 +1,17 @@
 # solarian-edulite-a3
 
-EDULITE A3 arm and gripper modules for Solarian. Joints use the Solarian Arm 1 names
+EDULITE A3 arm module for Solarian. Joints use the Solarian Arm 1 names
 (`shoulder_pan`, `shoulder_lift`, `elbow_flex`, `wrist_flex`, `wrist_yaw`,
-`wrist_roll`, `gripper`). Motors are Robstride RS00 / EL05 on one CAN bus;
-this plugin imports `RobstrideServo` from `solarian-robstride`.
+`wrist_roll`). Motors are Robstride RS00 (joints 1-3) and EL05 (joints 4-6) on
+one CAN bus; this plugin imports `RobstrideServo` from `solarian-robstride`.
+For a gripper, use `Gripper1RobstrideModule` from `solarian-gripper1[robstride]`
+on the same adapter.
 
 ## Installation
 
 ```bash
-pip install -e plugins/solarian-robstride
-pip install -e plugins/solarian-edulite-a3
+pip install -e "plugins/solarian-robstride[hardware]"
+pip install -e "plugins/solarian-edulite-a3[hardware]"
 ```
 
 ## Modules
@@ -17,12 +19,12 @@ pip install -e plugins/solarian-edulite-a3
 | Entry point | Class | Role |
 |---|---|---|
 | `edulite-a3-arm` | `EduliteA3ArmModule` | 6 joints + Mink IK (`x..rz`) |
-| `edulite-a3-gripper` | `EduliteA3GripperModule` | L7 jaw, aperture in cm |
 
-Default YAML lives at `solarian_edulite_a3/conf_arm.yaml` and
-`conf_gripper.yaml`. Copy them into a project's `conf/` (for example
-`right_arm.yaml` / `right_gripper.yaml`) and set the same `port` so the
-USB-CAN adapter is shared.
+`solarian install edulite-a3` copies the arm's default config,
+`templates/modules/right_arm.yaml`, to `conf/modules/right_arm.yaml`. Rename
+it to match the attribute on your `Robot`, and give the gripper's
+`conf/modules/<attribute>.yaml` the same `port` so the USB-CAN adapter is
+shared.
 
 Attach on a `Robot` the same way Solarian Arm 1 does:
 
@@ -31,47 +33,65 @@ from solarian.core.robot import Robot
 from solarian.sim import SceneConfig, ModuleAttachment
 from solarian_edulite_a3 import ARM_MJCF_PATH
 from solarian_edulite_a3.arm import EduliteA3ArmModule
-from solarian_edulite_a3.gripper import EduliteA3GripperModule
+from solarian_gripper1 import MJCF_ROBSTRIDE_PATH
+from solarian_gripper1.gripper_robstride import Gripper1RobstrideModule
 
 class EduliteRobot(Robot):
-    right_arm = EduliteA3ArmModule()
-    right_gripper = EduliteA3GripperModule()
+    right_arm = EduliteA3ArmModule(ik_tcp=Gripper1RobstrideModule.tcp_from_flange)
+    right_gripper = Gripper1RobstrideModule()
     scene = SceneConfig(
         attachments=[
+            ModuleAttachment(module="right_arm", mjcf=ARM_MJCF_PATH, prefix="arm/"),
             ModuleAttachment(
-                module="right_arm",
-                mjcf=ARM_MJCF_PATH,
-                prefix="arm/",
+                module="right_gripper",
+                mjcf=MJCF_ROBSTRIDE_PATH,
+                parent_site="arm/flange",
+                child_site="flange",
+                prefix="gripper/",
             ),
         ],
     )
 ```
 
-The placeholder MJCF includes the `gripper` joint, so the gripper module's
-`sim:` block points at `arm/gripper` and does not attach a second model.
+## Safety limits
 
-## OnShape export
+`max_speed`, `max_accel`, `max_joint_speed` and `max_joint_accel` are ceilings
+on this arm: a skill that asks for more (teleop, a policy) gets the configured
+value. `max_joint_speed` (rad/s, default 0.3) also holds Cartesian moves, which
+slow down wherever they would need a faster joint, and it is the `moveJ` speed
+when the caller names none. `solarian calibrate-arm` measures all three speeds.
 
-`assets/edulite_a3.xml` is kinematics-only (capsules, vendor joint limits).
-When the assembly is ready:
+Every motor also enforces a speed cap of its own in CSP, whatever it is
+commanded: 1.5 x `max_joint_speed`, written on start and again whenever
+calibration changes the speed. No planned move reaches it; a bad target or a
+wrong calibration does.
 
-1. Put the OnShape document URL in `assets/edulite_a3_description/config.json`.
-2. Name CAD mates `shoulder_pan` … `wrist_roll` (and `gripper` if the jaw is
-   in the same assembly).
-3. Keep `solarian.ee_site.name` as `gripper`.
-4. Run:
+The module config adds one field to the usual arm ones:
 
-```bash
-solarian onshape-export plugins/solarian-edulite-a3/solarian_edulite_a3/assets/edulite_a3_description
-```
+- `motor_current_limit` (A, default unset): the CSP current limit. Lower pushes
+  less hard into an obstacle; too low cannot hold the arm up.
 
-Then `solarian calibrate`.
+Enabling torque latches each motor's present position as its target first, so
+the arm holds where it is instead of driving to whatever target the motor
+kept from its last session.
+
+## Calibration
+
+The joints report multi-turn absolute position, so there is no range sweep.
+`solarian calibrate` asks for the arm folded at rest (upper arm lowered onto
+its stop, forearm folded back over it, wrist straight, pan and roll centred),
+which is every model joint at 0. That pose sets each joint's offset, and the MJCF limits set the window
+around it. The sign check that follows confirms each joint's direction against
+the live sim; the template's `drive_mode` values are first guesses from the
+vendor SDK.
+
+Torque is off while calibrating and the arm is limp: support it.
 
 ## Hardware
 
 - Robstride USB-CAN adapter (CH340): see `solarian-robstride` README.
-- CAN IDs 1–6 on the arm, ID 7 on the gripper.
-- Set mechanical zero (adapter GUI or bus set-zero) before the first
-  `solarian calibrate` sweep.
-- Wrist motors: YAML `model: el05` by default; switch to `rs05` if that is
-  what is installed.
+- CAN IDs 1-6 on the arm, ID 7 on the gripper.
+- Joint models are declared in `arm.py` (`rs00` for 1-3, `el05` for 4-6);
+  change them there if your arm has different motors.
+- The MJCF's `wrist_flex` range (-0.67 to 2.35 rad) is wider than the vendor
+  SDK's ±1.57 rad. Check the real wrist's stops before trusting the upper end.

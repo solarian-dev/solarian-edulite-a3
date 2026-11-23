@@ -1,0 +1,67 @@
+# Default configuration for EduliteA3ArmModule.
+#
+# solarian install copies this to conf/modules/right_arm.yaml.
+# Arm and gripper share the same USB-CAN adapter: set the same port on both.
+
+actuator_port: /dev/ttyUSB0
+frequency: 90
+interpolator_type: pose
+drive_waypoints: true
+
+# Ceilings, which a skill asking for more cannot exceed; `solarian
+# calibrate-arm` measures the speeds. Cartesian [m/s, rad/s] and accelerations
+# [m/s^2, rad/s^2]; joint speed and ramp (rad/s, rad/s^2), which Cartesian
+# moves stay under too. Each motor caps itself at 1.5 x max_joint_speed.
+max_speed: [0.05, 0.3]
+max_accel: [0.1, 0.6]
+max_joint_speed: 0.3
+max_joint_accel: 0.5
+
+# Joint ranges are the MJCF's, in radians, with every joint at 0 in the folded
+# rest pose; `solarian calibrate` captures that pose and derives each window.
+# They are read from the MJCF, not this file. sim_drive_mode stays 0: IK maps
+# normalized values onto those ranges as they are. drive_mode is the real motor's sign against the model, a first guess
+# from the vendor SDK that the calibration's sign check confirms or flips.
+actuators:
+    shoulder_pan:
+        id: 1
+        port: ${actuator_port}
+        mode: range_m100_100
+        sim_joint: "arm/shoulder_pan"
+        sim_drive_mode: 0
+        drive_mode: 1
+    shoulder_lift:
+        id: 2
+        port: ${actuator_port}
+        mode: range_m100_100
+        sim_joint: "arm/shoulder_lift"
+        sim_drive_mode: 0
+        drive_mode: 0
+    elbow_flex:
+        id: 3
+        port: ${actuator_port}
+        mode: range_m100_100
+        sim_joint: "arm/elbow_flex"
+        sim_drive_mode: 0
+        drive_mode: 0
+    wrist_flex:
+        id: 4
+        port: ${actuator_port}
+        mode: range_m100_100
+        sim_joint: "arm/wrist_flex"
+        sim_drive_mode: 0
+        drive_mode: 0
+    wrist_yaw:
+        id: 5
+        port: ${actuator_port}
+        mode: range_m100_100
+        sim_joint: "arm/wrist_yaw"
+        sim_drive_mode: 0
+        drive_mode: 1
+    wrist_roll:
+        id: 6
+        port: ${actuator_port}
+        mode: range_m100_100
+        sim_joint: "arm/wrist_roll"
+        sim_drive_mode: 0
+        drive_mode: 0

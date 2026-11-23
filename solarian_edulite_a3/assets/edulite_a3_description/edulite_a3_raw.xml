@@ -1,159 +1,118 @@
-<?xml version="1.0" ?>
-<!-- Generated using onshape-to-robot -->
-<!-- Onshape https://cad.onshape.com/documents/5fbd7547dd7daafc3a6e92e9/w/7b637b106665c730fa38ff07/e/b91787a171194b8a330d77ec -->
+<?xml version='1.0' encoding='utf-8'?>
 <mujoco model="edulite_a3">
-  <compiler angle="radian" meshdir="meshes" autolimits="true"/>
+  <compiler angle="radian" meshdir="meshes" autolimits="true" />
   <default>
     <default class="edulite_a3">
-      <joint frictionloss="0.1" armature="0.005"/>
-      <position kp="50" dampratio="1"/>
+      <joint frictionloss="0.1" armature="0.005" />
+      <position kp="50" dampratio="1" />
       <default class="visual">
-        <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+        <geom type="mesh" contype="0" conaffinity="0" group="2" />
       </default>
       <default class="collision">
-        <geom group="3"/>
+        <geom group="3" />
       </default>
     </default>
   </default>
   <worldbody>
-    <!-- Link l1_base -->
-    <body name="l1_base" pos="0 0 0" quat="1 0 0 0" childclass="edulite_a3">
-      <freejoint name="l1_base_freejoint"/>
-      <inertial pos="0 0 0" mass="1e-09" fullinertia="1e-09 1e-09 1e-09 0 0 0"/>
-      <!-- Part l1_base -->
-      <geom type="mesh" class="visual" pos="-0.000642857 -0 0.059" quat="1 0 0 0" mesh="l1_base" material="l1_base_material"/>
-      <geom type="mesh" class="collision" pos="-0.000642857 -0 0.059" quat="1 0 0 0" mesh="l1_base" material="l1_base_material"/>
-      <!-- Part rs00_l1 -->
-      <geom type="mesh" class="visual" pos="-0.000642857 -0 0.059" quat="1 0 0 0" mesh="rs00_l1" material="rs00_l1_material"/>
-      <geom type="mesh" class="collision" pos="-0.000642857 -0 0.059" quat="1 0 0 0" mesh="rs00_l1" material="rs00_l1_material"/>
-      <!-- Link l2_base -->
-      <body name="l2_base" pos="0 0 0.06" quat="0 -1 -0 0">
-        <!-- Joint from l1_base to l2_base -->
-        <joint axis="0 0 1" name="shoulder_pan" type="hinge" range="-2.792526803190927 2.792526803190927"/>
-        <inertial pos="0 0 0" mass="1e-09" fullinertia="1e-09 1e-09 1e-09 0 0 0"/>
-        <!-- Part l2_base -->
-        <geom type="mesh" class="visual" pos="-0.000642857 0 0.001" quat="0 1 0 0" mesh="l2_base" material="l2_base_material"/>
-        <geom type="mesh" class="collision" pos="-0.000642857 0 0.001" quat="0 1 0 0" mesh="l2_base" material="l2_base_material"/>
-        <!-- Part l2_cover -->
-        <geom type="mesh" class="visual" pos="-0.000642857 -0 0.001" quat="0 1 0 0" mesh="l2_cover" material="l2_cover_material"/>
-        <geom type="mesh" class="collision" pos="-0.000642857 -0 0.001" quat="0 1 0 0" mesh="l2_cover" material="l2_cover_material"/>
-        <!-- Link l3_motor -->
-        <body name="l3_motor" pos="-0.00964286 0.0265 -0.069" quat="0.70708 -0.70708 0.00617059 0.00617059">
-          <!-- Joint from l2_base to l3_motor -->
-          <joint axis="0 0 1" name="shoulder_lift" type="hinge" range="0.0 3.4382986264288293"/>
-          <inertial pos="0 0 0" mass="1e-09" fullinertia="1e-09 1e-09 1e-09 0 0 0"/>
-          <!-- Part rs00_l2 -->
-          <geom type="mesh" class="visual" pos="0.009 -0.07 -0.0265" quat="0.707107 -0.707107 -0 0" mesh="rs00_l2" material="rs00_l2_material"/>
-          <geom type="mesh" class="collision" pos="0.009 -0.07 -0.0265" quat="0.707107 -0.707107 -0 0" mesh="rs00_l2" material="rs00_l2_material"/>
-          <!-- Part l3_back -->
-          <geom type="mesh" class="visual" pos="0.009 -0.07 -0.026" quat="0.707107 -0.707107 0 -0" mesh="l3_back" material="l3_back_material"/>
-          <geom type="mesh" class="collision" pos="0.009 -0.07 -0.026" quat="0.707107 -0.707107 0 -0" mesh="l3_back" material="l3_back_material"/>
-          <!-- Part rs00_l3 -->
-          <geom type="mesh" class="visual" pos="0.009 -0.07 -0.0265" quat="0.707107 -0.707107 0 -0" mesh="rs00_l3" material="rs00_l3_material"/>
-          <geom type="mesh" class="collision" pos="0.009 -0.07 -0.0265" quat="0.707107 -0.707107 0 -0" mesh="rs00_l3" material="rs00_l3_material"/>
-          <!-- Part l3_motor -->
-          <geom type="mesh" class="visual" pos="0.009 -0.07 -0.0262" quat="0.707107 -0.707107 0 -0" mesh="l3_motor" material="l3_motor_material"/>
-          <geom type="mesh" class="collision" pos="0.009 -0.07 -0.0262" quat="0.707107 -0.707107 0 -0" mesh="l3_motor" material="l3_motor_material"/>
-          <!-- Link l4_left -->
-          <body name="l4_left" pos="0.19 -0 0" quat="0 -1 0 -0">
-            <!-- Joint from l3_motor to l4_left -->
-            <joint axis="0 0 1" name="elbow_flex" type="hinge" range="0.0 3.6285395148962114"/>
-            <inertial pos="0 0 0" mass="1e-09" fullinertia="1e-09 1e-09 1e-09 0 0 0"/>
-            <!-- Part l4_left -->
-            <geom type="mesh" class="visual" pos="-0.181 0.07 0.0265" quat="0.707107 0.707107 -0 -0" mesh="l4_left" material="l4_left_material"/>
-            <geom type="mesh" class="collision" pos="-0.181 0.07 0.0265" quat="0.707107 0.707107 -0 -0" mesh="l4_left" material="l4_left_material"/>
-            <!-- Part l4_right -->
-            <geom type="mesh" class="visual" pos="-0.181 0.07 0.0265" quat="0.707107 0.707107 -0 0" mesh="l4_right" material="l4_right_material"/>
-            <geom type="mesh" class="collision" pos="-0.181 0.07 0.0265" quat="0.707107 0.707107 -0 0" mesh="l4_right" material="l4_right_material"/>
-            <!-- Link l5_back -->
-            <body name="l5_back" pos="-0.185 -0.064 0.0045" quat="0 1 -0 -0">
-              <!-- Joint from l4_left to l5_back -->
-              <joint axis="0 0 1" name="wrist_flex" type="hinge" range="-0.6702064327658225 2.345722514680379"/>
-              <inertial pos="0 0 0" mass="1e-09" fullinertia="1e-09 1e-09 1e-09 0 0 0"/>
-              <!-- Part l5_back -->
-              <geom type="mesh" class="visual" pos="-0.0475841 -0.125331 -0.0215" quat="0.69352 -0.69352 0.13795 -0.13795" mesh="l5_back" material="l5_back_material"/>
-              <geom type="mesh" class="collision" pos="-0.0475841 -0.125331 -0.0215" quat="0.69352 -0.69352 0.13795 -0.13795" mesh="l5_back" material="l5_back_material"/>
-              <!-- Part l5_shake -->
-              <geom type="mesh" class="visual" pos="-0.0475841 -0.125331 -0.0215" quat="0.69352 -0.69352 0.13795 -0.13795" mesh="l5_shake" material="l5_shake_material"/>
-              <geom type="mesh" class="collision" pos="-0.0475841 -0.125331 -0.0215" quat="0.69352 -0.69352 0.13795 -0.13795" mesh="l5_shake" material="l5_shake_material"/>
-              <!-- Part el05_l5 -->
-              <geom type="mesh" class="visual" pos="-0.0475841 -0.125331 -0.0215" quat="0.69352 -0.69352 0.13795 -0.13795" mesh="el05_l5" material="el05_l5_material"/>
-              <geom type="mesh" class="collision" pos="-0.0475841 -0.125331 -0.0215" quat="0.69352 -0.69352 0.13795 -0.13795" mesh="el05_l5" material="el05_l5_material"/>
-              <!-- Part l5_motor -->
-              <geom type="mesh" class="visual" pos="-0.0475841 -0.125331 -0.0215" quat="0.69352 -0.69352 0.13795 -0.13795" mesh="l5_motor" material="l5_motor_material"/>
-              <geom type="mesh" class="collision" pos="-0.0475841 -0.125331 -0.0215" quat="0.69352 -0.69352 0.13795 -0.13795" mesh="l5_motor" material="l5_motor_material"/>
-              <!-- Part el05_l4 -->
-              <geom type="mesh" class="visual" pos="0.004 -0.134 -0.022" quat="0.707107 -0.707107 0 -0" mesh="el05_l4" material="el05_l4_material"/>
-              <geom type="mesh" class="collision" pos="0.004 -0.134 -0.022" quat="0.707107 -0.707107 0 -0" mesh="el05_l4" material="el05_l4_material"/>
-              <!-- Link l6_link -->
-              <body name="l6_link" pos="-0.0309129 0.0539354 -0.0215" quat="0.69352 -0.69352 0.13795 -0.13795">
-                <!-- Joint from l5_back to l6_link -->
-                <joint axis="0 0 1" name="wrist_yaw" type="hinge" range="-1.5707963267948966 1.5707963267948966"/>
-                <inertial pos="0 0 0" mass="1e-09" fullinertia="1e-09 1e-09 1e-09 0 0 0"/>
-                <!-- Part l6_link -->
-                <geom type="mesh" class="visual" pos="0.0532 0 -0.173" quat="1 0 0 0" mesh="l6_link" material="l6_link_material"/>
-                <geom type="mesh" class="collision" pos="0.0532 0 -0.173" quat="1 0 0 0" mesh="l6_link" material="l6_link_material"/>
-                <!-- Link el05_l6 -->
-                <body name="el05_l6" pos="0.00755 0 -0.0391565" quat="0.5 0.5 0.5 0.5">
-                  <!-- Joint from l6_link to el05_l6 -->
-                  <joint axis="0 0 1" name="wrist_roll" type="hinge" range="-3.1415926535897922 3.141592653589794"/>
-                  <inertial pos="0 0 0" mass="1e-09" fullinertia="1e-09 1e-09 1e-09 0 0 0"/>
-                  <!-- Part el05_l6 -->
-                  <geom type="mesh" class="visual" pos="-0 -0.134 0.04515" quat="0.5 -0.5 -0.5 -0.5" mesh="el05_l6" material="el05_l6_material"/>
-                  <geom type="mesh" class="collision" pos="-0 -0.134 0.04515" quat="0.5 -0.5 -0.5 -0.5" mesh="el05_l6" material="el05_l6_material"/>
-                  <!-- Frame flange -->
-                  <site group="3" name="flange" pos="-0 0 -0.044" quat="0 0 -1 0"/>
+    <body name="root" pos="0 0 0" quat="1 0 0 0" childclass="edulite_a3">
+      <freejoint name="root_freejoint" />
+      <geom class="visual" pos="2.3613456e-09 -0.000642857 0.059" quat="0.70710548 0 0 0.70710808" mesh="L1_base" material="L1_base_material" />
+      <geom class="collision" pos="2.3613456e-09 -0.000642857 0.059" quat="0.70710548 0 0 0.70710808" mesh="L1_base" material="L1_base_material" />
+      <geom class="visual" pos="2.3615036e-09 -0.0006429 0.059" quat="0.70710548 0 0 0.70710808" mesh="RS00_L1" material="RS00_L1_material" />
+      <geom class="collision" pos="2.3615036e-09 -0.0006429 0.059" quat="0.70710548 0 0 0.70710808" mesh="RS00_L1" material="RS00_L1_material" />
+      <body name="l2_base" pos="0 0 0.06" quat="0.70710548 5.5961862e-16 -5.1617356e-16 0.70710808">
+        <joint name="shoulder_pan" type="hinge" axis="0 0 -1" range="-2.79253 2.79253" />
+        <geom class="visual" pos="-0.000642857 0 -0.001" quat="1 0 0 0" mesh="L2_base" material="L2_base_material" />
+        <geom class="collision" pos="-0.000642857 0 -0.001" quat="1 0 0 0" mesh="L2_base" material="L2_base_material" />
+        <body name="rs00_l2" pos="-0.00964286 -0.0265 0.069" quat="1 -1.989335e-17 8.6963e-18 3.376375e-17">
+          <joint name="shoulder_lift" type="hinge" axis="0 -1 0" range="-4.22926e-15 3.4383" />
+          <geom class="visual" pos="0.0102203 0.0265 -0.0698323" quat="0.99996192 0 -0.0087265392 0" mesh="RS00_L2" material="RS00_L2_material" />
+          <geom class="collision" pos="0.0102203 0.0265 -0.0698323" quat="0.99996192 0 -0.0087265392 0" mesh="RS00_L2" material="RS00_L2_material" />
+          <geom class="visual" pos="0.010220288 0.026 -0.069832194" quat="0.99996192 -2.6946195e-16 -0.0087265392 -5.4248485e-16" mesh="L3_back" material="L3_back_material" />
+          <geom class="collision" pos="0.010220288 0.026 -0.069832194" quat="0.99996192 -2.6946195e-16 -0.0087265392 -5.4248485e-16" mesh="L3_back" material="L3_back_material" />
+          <geom class="visual" pos="0.010220318 0.0265 -0.069832194" quat="0.99996192 -2.5965494e-16 -0.0087265392 -5.1378943e-16" mesh="RS00_L3" material="RS00_L3_material" />
+          <geom class="collision" pos="0.010220318 0.0265 -0.069832194" quat="0.99996192 -2.5965494e-16 -0.0087265392 -5.1378943e-16" mesh="RS00_L3" material="RS00_L3_material" />
+          <body name="l4_right" pos="0.18997108 -2.0122792e-16 0.0033160317" quat="0.99996192 -1.6900597e-16 -0.0087265392 -8.1087419e-16">
+            <joint name="elbow_flex" type="hinge" axis="0 1 0" range="0 3.62854" />
+            <geom class="visual" pos="-0.181 0.0265 -0.07" quat="1 0 0 0" mesh="L4_right" material="L4_right_material" />
+            <geom class="collision" pos="-0.181 0.0265 -0.07" quat="1 0 0 0" mesh="L4_right" material="L4_right_material" />
+            <body name="el05_l4" pos="-0.185 0.0045 0.064" quat="0.93263907 -1.6279062e-17 -0.3608107 1.2369166e-16">
+              <joint name="wrist_flex" type="hinge" axis="0 -1 -6.12323e-17" range="-1.40848 1.48004" />
+              <geom class="visual" pos="0.004 0.022 -0.134" quat="1 0 0 0" mesh="EL05_L4" material="EL05_L4_material" />
+              <geom class="collision" pos="0.004 0.022 -0.134" quat="1 0 0 0" mesh="EL05_L4" material="EL05_L4_material" />
+              <geom class="visual" pos="-0.047584052 0.022 -0.12533059" quat="0.98078529 2.0925475e-17 0.19509028 -1.0212584e-16" mesh="L5_motor" material="L5_motor_material" />
+              <geom class="collision" pos="-0.047584052 0.022 -0.12533059" quat="0.98078529 2.0925475e-17 0.19509028 -1.0212584e-16" mesh="L5_motor" material="L5_motor_material" />
+              <geom class="visual" pos="-0.047584128 0.022 -0.12533078" quat="0.98078529 -2.5310394e-17 0.19509028 1.633412e-16" mesh="L5_back" material="L5_back_material" />
+              <geom class="collision" pos="-0.047584128 0.022 -0.12533078" quat="0.98078529 -2.5310394e-17 0.19509028 1.633412e-16" mesh="L5_back" material="L5_back_material" />
+              <geom class="visual" pos="-0.047584052 0.022 -0.12533059" quat="0.98078529 -4.1094276e-17 0.19509028 1.5073883e-16" mesh="EL05_L5" material="EL05_L5_material" />
+              <geom class="collision" pos="-0.047584052 0.022 -0.12533059" quat="0.98078529 -4.1094276e-17 0.19509028 1.5073883e-16" mesh="EL05_L5" material="EL05_L5_material" />
+              <body name="l6_link" pos="-0.030912907 0.022 0.053935445" quat="0.98078529 -1.1563461e-16 0.19509028 -1.1807934e-16">
+                <joint name="wrist_yaw" type="hinge" axis="0 0 1" range="-1.5708 1.5708" />
+                <geom class="visual" pos="0.0532 2.78535e-16 -0.173" quat="1 0 0 0" mesh="L6_link" material="L6_link_material" />
+                <geom class="collision" pos="0.0532 2.78535e-16 -0.173" quat="1 0 0 0" mesh="L6_link" material="L6_link_material" />
+                <body name="el05_l6" pos="0.00755 1.36396e-16 -0.0391565" quat="1 7.97985e-16 9.57565e-16 9.88155e-16">
+                  <joint name="wrist_roll" type="hinge" axis="1 0 0" range="-3.14159 3.14159" />
+                  <geom class="visual" pos="0.04515 -5.55112e-17 -0.134" quat="1 0 0 0" mesh="EL05_L6" material="EL05_L6_material" />
+                  <geom class="collision" pos="0.04515 -5.55112e-17 -0.134" quat="1 0 0 0" mesh="EL05_L6" material="EL05_L6_material" />
+                  <site name="flange" group="3" pos="-0.044 -2.37257e-13 3.04007e-13" quat="-0.49999816 0.5 0.50000184 -0.5" />
                 </body>
               </body>
+              <geom class="visual" pos="-0.047584052 0.022 -0.12533059" quat="0.98078529 -4.4620255e-17 0.19509028 1.5213842e-16" mesh="L5_shake" material="L5_shake_material" />
+              <geom class="collision" pos="-0.047584052 0.022 -0.12533059" quat="0.98078529 -4.4620255e-17 0.19509028 1.5213842e-16" mesh="L5_shake" material="L5_shake_material" />
             </body>
+            <geom class="visual" pos="-0.1810005 0.0265 -0.0699999" quat="1 6.837e-19 8.6736e-19 -5.138e-18" mesh="L4_left" material="L4_left_material" />
+            <geom class="collision" pos="-0.1810005 0.0265 -0.0699999" quat="1 6.837e-19 8.6736e-19 -5.138e-18" mesh="L4_left" material="L4_left_material" />
           </body>
+          <geom class="visual" pos="0.010220318 0.0262 -0.069832224" quat="0.99996192 -2.7133835e-16 -0.0087265392 -5.2061979e-16" mesh="L3_motor" material="L3_motor_material" />
+          <geom class="collision" pos="0.010220318 0.0262 -0.069832224" quat="0.99996192 -2.7133835e-16 -0.0087265392 -5.2061979e-16" mesh="L3_motor" material="L3_motor_material" />
         </body>
+        <geom class="visual" pos="-0.0006429 0 -0.001" quat="1 7.79755e-84 3.944305e-31 -2.73691e-47" mesh="L2_cover" material="L2_cover_material" />
+        <geom class="collision" pos="-0.0006429 0 -0.001" quat="1 7.79755e-84 3.944305e-31 -2.73691e-47" mesh="L2_cover" material="L2_cover_material" />
       </body>
     </body>
   </worldbody>
   <asset>
-    <mesh file="l2_base.stl"/>
-    <mesh file="l3_back.stl"/>
-    <mesh file="l5_back.stl"/>
-    <mesh file="el05_l5.stl"/>
-    <mesh file="l5_shake.stl"/>
-    <mesh file="l6_link.stl"/>
-    <mesh file="l4_left.stl"/>
-    <mesh file="l2_cover.stl"/>
-    <mesh file="el05_l4.stl"/>
-    <mesh file="rs00_l2.stl"/>
-    <mesh file="rs00_l1.stl"/>
-    <mesh file="l4_right.stl"/>
-    <mesh file="l1_base.stl"/>
-    <mesh file="el05_l6.stl"/>
-    <mesh file="rs00_l3.stl"/>
-    <mesh file="l3_motor.stl"/>
-    <mesh file="l5_motor.stl"/>
-    <material name="l1_base_material" rgba="0.301961 0.290196 0.262745 1"/>
-    <material name="rs00_l1_material" rgba="0.615686 0.811765 0.929412 1"/>
-    <material name="l2_base_material" rgba="0.972549 0.529412 0.00392157 1"/>
-    <material name="l2_cover_material" rgba="0.972549 0.529412 0.00392157 1"/>
-    <material name="rs00_l2_material" rgba="0.615686 0.811765 0.929412 1"/>
-    <material name="l3_back_material" rgba="0.301961 0.290196 0.262745 1"/>
-    <material name="rs00_l3_material" rgba="0.615686 0.811765 0.929412 1"/>
-    <material name="l3_motor_material" rgba="0.301961 0.290196 0.262745 1"/>
-    <material name="l4_left_material" rgba="0.972549 0.529412 0.00392157 1"/>
-    <material name="l4_right_material" rgba="0.972549 0.529412 0.00392157 1"/>
-    <material name="l5_back_material" rgba="0.301961 0.290196 0.262745 1"/>
-    <material name="l5_shake_material" rgba="0.972549 0.529412 0.00392157 1"/>
-    <material name="el05_l5_material" rgba="0.301961 0.290196 0.262745 1"/>
-    <material name="l5_motor_material" rgba="0.301961 0.290196 0.262745 1"/>
-    <material name="el05_l4_material" rgba="0.301961 0.290196 0.262745 1"/>
-    <material name="l6_link_material" rgba="0.301961 0.290196 0.262745 1"/>
-    <material name="el05_l6_material" rgba="0.301961 0.290196 0.262745 1"/>
+    <mesh file="L1_base.stl" />
+    <mesh file="RS00_L1.stl" />
+    <mesh file="L2_base.stl" />
+    <mesh file="RS00_L2.stl" />
+    <mesh file="L3_back.stl" />
+    <mesh file="RS00_L3.stl" />
+    <mesh file="L4_right.stl" />
+    <mesh file="EL05_L4.stl" />
+    <mesh file="L5_motor.stl" />
+    <mesh file="L5_back.stl" />
+    <mesh file="EL05_L5.stl" />
+    <mesh file="L6_link.stl" />
+    <mesh file="EL05_L6.stl" />
+    <mesh file="L5_shake.stl" />
+    <mesh file="L4_left.stl" />
+    <mesh file="L3_motor.stl" />
+    <mesh file="L2_cover.stl" />
+    <material name="L1_base_material" rgba="0.301961 0.290196 0.262745 1" />
+    <material name="RS00_L1_material" rgba="0.615686 0.811765 0.929412 1" />
+    <material name="L2_base_material" rgba="0.972549 0.529412 0.00392157 1" />
+    <material name="RS00_L2_material" rgba="0.615686 0.811765 0.929412 1" />
+    <material name="L3_back_material" rgba="0.301961 0.290196 0.262745 1" />
+    <material name="RS00_L3_material" rgba="0.615686 0.811765 0.929412 1" />
+    <material name="L4_right_material" rgba="0.972549 0.529412 0.00392157 1" />
+    <material name="EL05_L4_material" rgba="0.301961 0.290196 0.262745 1" />
+    <material name="L5_motor_material" rgba="0.301961 0.290196 0.262745 1" />
+    <material name="L5_back_material" rgba="0.301961 0.290196 0.262745 1" />
+    <material name="EL05_L5_material" rgba="0.301961 0.290196 0.262745 1" />
+    <material name="L6_link_material" rgba="0.301961 0.290196 0.262745 1" />
+    <material name="EL05_L6_material" rgba="0.301961 0.290196 0.262745 1" />
+    <material name="L5_shake_material" rgba="0.972549 0.529412 0.00392157 1" />
+    <material name="L4_left_material" rgba="0.972549 0.529412 0.00392157 1" />
+    <material name="L3_motor_material" rgba="0.301961 0.290196 0.262745 1" />
+    <material name="L2_cover_material" rgba="0.972549 0.529412 0.00392157 1" />
   </asset>
   <actuator>
-    <position class="edulite_a3" name="shoulder_pan" joint="shoulder_pan" inheritrange="1"/>
-    <position class="edulite_a3" name="shoulder_lift" joint="shoulder_lift" inheritrange="1"/>
-    <position class="edulite_a3" name="elbow_flex" joint="elbow_flex" inheritrange="1"/>
-    <position class="edulite_a3" name="wrist_flex" joint="wrist_flex" inheritrange="1"/>
-    <position class="edulite_a3" name="wrist_yaw" joint="wrist_yaw" inheritrange="1"/>
-    <position class="edulite_a3" name="wrist_roll" joint="wrist_roll" inheritrange="1"/>
+    <position class="edulite_a3" name="shoulder_pan" joint="shoulder_pan" inheritrange="1" />
+    <position class="edulite_a3" name="shoulder_lift" joint="shoulder_lift" inheritrange="1" />
+    <position class="edulite_a3" name="elbow_flex" joint="elbow_flex" inheritrange="1" />
+    <position class="edulite_a3" name="wrist_flex" joint="wrist_flex" inheritrange="1" />
+    <position class="edulite_a3" name="wrist_yaw" joint="wrist_yaw" inheritrange="1" />
+    <position class="edulite_a3" name="wrist_roll" joint="wrist_roll" inheritrange="1" />
   </actuator>
-  <equality/>
 </mujoco>
