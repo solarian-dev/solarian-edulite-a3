@@ -61,19 +61,53 @@ value. `max_joint_speed` (rad/s, default 0.3) also holds Cartesian moves, which
 slow down wherever they would need a faster joint, and it is the `moveJ` speed
 when the caller names none. `solarian calibrate-arm` measures all three speeds.
 
-Every motor also enforces a speed cap of its own in CSP, whatever it is
-commanded: 1.5 x `max_joint_speed`, written on start and again whenever
-calibration changes the speed. No planned move reaches it; a bad target or a
-wrong calibration does.
+Every joint also has a speed cap below the planner, whatever it is commanded:
+1.5 x `max_joint_speed`, set on start and again whenever calibration changes
+the speed. In CSP the motor enforces it; in MIT mode the bus does, by bounding
+how far each tick's target may move. No planned move reaches it; a bad target
+or a wrong calibration does.
 
-The module config adds one field to the usual arm ones:
+Enabling torque holds each joint where it is: in CSP the present position is
+latched as the motor's target first, and in MIT mode the first command after
+the enable is a hold at the present position.
+
+## Control mode
+
+`control_mode: mit` (the default) drives the joints the way RobStride's own
+EL-A3 SDK does. Every tick sends each motor a type 1 (MIT) frame: its target,
+a velocity, a stiffness Kp, a damping Kd and a torque, and the motor applies
+`Kp (target - position) + Kd (velocity - speed) + torque`. The torque is the
+model's gravity load at the target pose, so the stiffness only has to correct
+small errors, and the velocity is the target's own rate, so the damping does
+not brake a planned move.
+
+`control_mode: csp` uses the motors' own position loop instead. Its factory
+gains oscillate inside the gear backlash under load, which is the buzz an
+EduLite makes holding a pose in CSP. Keep it as a fallback.
+
+The gripper stays in CSP either way: its motor carries no gravity load, and
+the bus only sends MIT frames to the arm joints.
+
+MIT fields (ignored in CSP):
+
+- `mit_kp` (Nm/rad, default 80) and `mit_kd` (Nm·s/rad, default 4): one value
+  for every joint, or a map by joint name. These are the vendor's defaults.
+  Raise Kp for a stiffer hold; raise Kd if it overshoots.
+- `gravity_feedforward` (default 1.0): the share of the model's gravity torque
+  sent. 0 leaves gravity to Kp, and the arm sags until the error pays for it.
+- `tool_mass_kg` (default 0) and `tool_com` (m, flange frame, +z out of the
+  flange): whatever is bolted to the flange, which the arm's model does not
+  contain. Without it the arm droops by the tool's weight over Kp.
+
+The link masses in the MJCF are the vendor's (`el_a3.urdf` in the EL-A3 SDK),
+moved into this model's frames, about 1.8 kg for the moving links. The last
+link keeps its own small mass: the vendor's includes their gripper, which is
+what `tool_mass_kg` describes here.
+
+CSP field (ignored in MIT):
 
 - `motor_current_limit` (A, default unset): the CSP current limit. Lower pushes
   less hard into an obstacle; too low cannot hold the arm up.
-
-Enabling torque latches each motor's present position as its target first, so
-the arm holds where it is instead of driving to whatever target the motor
-kept from its last session.
 
 ## Calibration
 

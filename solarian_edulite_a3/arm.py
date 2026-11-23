@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Literal
 
 from solarian.core.actuator_module import SPEED_BACKSTOP_MARGIN
 from solarian.core.arm_module import ArmModule
@@ -10,6 +11,7 @@ from solarian.core.calibration import MotorCalibration
 from solarian.core.configs import ModuleConfig
 from solarian.core.ik import CartesianIKActuator, MinkIK
 from solarian_edulite_a3 import ARM_MJCF_PATH
+from solarian_edulite_a3.gravity import GravityFeedforward
 from solarian_robstride.actuator import RobstrideServo
 from solarian_robstride.protocol import PROTOCOL_CPR, RunMode, params_for_model
 
@@ -27,6 +29,20 @@ IK_JOINTS = [
 
 
 class EduliteA3ArmConfig(ModuleConfig):
+    #: ``mit``: every tick sends each motor its target, velocity, stiffness,
+    #: damping and the torque that holds the arm against gravity. ``csp``: the
+    #: motors' own position loop, whose factory gains buzz under load.
+    control_mode: Literal["mit", "csp"] = "mit"
+    #: MIT stiffness (Nm/rad) and damping (Nm·s/rad): one value for every joint,
+    #: or one per joint name. The vendor SDK's defaults.
+    mit_kp: float | dict[str, float] = 80.0
+    mit_kd: float | dict[str, float] = 4.0
+    #: Share of the model's gravity torque sent in MIT mode; 0 leaves it all to Kp.
+    gravity_feedforward: float = 1.0
+    #: What is bolted to the flange, which the arm's model does not contain:
+    #: mass (kg) and centre of mass (m) in the flange frame, +z pointing out.
+    tool_mass_kg: float = 0.0
+    tool_com: list[float] = [0.0, 0.0, 0.0]
     #: Current cap (A) for CSP; ``None`` keeps the motor's own (RS00 15.5, EL05 11).
     #: Lower pushes less hard into an obstacle; too low cannot hold the arm up.
     motor_current_limit: float | None = None
@@ -100,27 +116,62 @@ class EduliteA3ArmModule(ArmModule):
             acceleration = min(acceleration, cap)
         super().moveJ(q, speed=speed, acceleration=acceleration, t_now=t_now)
 
+    def _joint_bus(self):
+        """The Robstride bus under the IK wrapper, or a proxy to it.
+
+        In sim it is the world's bus, which has none of the Robstride methods.
+        """
+        port = next(p for p, names in self.actuators_by_port.items() if IK_JOINTS[0] in names)
+        return self.module_bus.component_bus_by_port[port].inner_bus
+
+    def _per_joint(self, value: float | dict[str, float]) -> dict[str, float]:
+        if isinstance(value, dict):
+            return {name: float(value[name]) for name in IK_JOINTS}
+        return {name: float(value) for name in IK_JOINTS}
+
     def initialize(self):
         super().initialize()
         # Run mode and limits only take while the motor is disabled.
         self.disable_torque(IK_JOINTS)
-        limits = {"run_mode": int(RunMode.POSITION_CSP)}
-        if self.cfg.motor_current_limit is not None:
-            limits["limit_cur"] = self.cfg.motor_current_limit
-        self.configure_components(limits, component_names=IK_JOINTS)
+        bus = self._joint_bus()
+        if self.cfg.control_mode == "mit" and hasattr(bus, "use_motion_control"):
+            self.configure_components(
+                {"run_mode": int(RunMode.MOTION_CONTROL)}, component_names=IK_JOINTS
+            )
+            kp, kd = self._per_joint(self.cfg.mit_kp), self._per_joint(self.cfg.mit_kd)
+            bus.use_motion_control(
+                {name: (kp[name], kd[name]) for name in IK_JOINTS},
+                GravityFeedforward(
+                    self._joint_limits(),
+                    tool_mass_kg=self.cfg.tool_mass_kg,
+                    tool_com=self.cfg.tool_com,
+                    scale=self.cfg.gravity_feedforward,
+                ),
+            )
+        else:
+            limits = {"run_mode": int(RunMode.POSITION_CSP)}
+            if self.cfg.motor_current_limit is not None:
+                limits["limit_cur"] = self.cfg.motor_current_limit
+            self.configure_components(limits, component_names=IK_JOINTS)
         self.enable_torque_holding()
         # After the enable: a disabled motor ignores a limit_spd write.
         self.apply_speed_backstop()
 
     def apply_speed_backstop(self):
-        """``limit_spd`` = margin x ``max_joint_speed`` on every joint.
+        """Cap every joint at margin x ``max_joint_speed``.
 
-        The joints are direct drive, so joint and motor radians are the same.
-        Cartesian moves are held under ``max_joint_speed`` too, so no planned
-        move reaches this cap; a bad target or a wrong calibration does.
+        In CSP the motor enforces it as ``limit_spd``; in MIT the bus bounds how
+        far each target may step. The joints are direct drive, so joint and
+        motor radians are the same. Cartesian moves are held under
+        ``max_joint_speed`` too, so no planned move reaches this cap; a bad
+        target or a wrong calibration does.
         """
         limit = SPEED_BACKSTOP_MARGIN * float(self.cfg.max_joint_speed)
-        self.configure_components({"limit_spd": limit}, component_names=IK_JOINTS)
+        bus = self._joint_bus()
+        if hasattr(bus, "set_speed_cap"):
+            bus.set_speed_cap(IK_JOINTS, limit)
+        else:
+            self.configure_components({"limit_spd": limit}, component_names=IK_JOINTS)
         logger.info("EDULITE A3 '%s': motor speed cap %.2f rad/s per joint", self.name, limit)
 
     def _ticks_per_rad(self, name: str) -> float:
@@ -163,9 +214,7 @@ class EduliteA3ArmModule(ArmModule):
         )
         input("Press ENTER when the arm rests folded...")
 
-        port = next(p for p, names in self.actuators_by_port.items() if IK_JOINTS[0] in names)
-        bus = self.module_bus.component_bus_by_port[port]
-        offsets = bus.set_half_turn_homings(IK_JOINTS)
+        offsets = self._joint_bus().set_half_turn_homings(IK_JOINTS)
         calibration = {
             name: MotorCalibration(
                 id=int(self.actuators[name].cfg.id),

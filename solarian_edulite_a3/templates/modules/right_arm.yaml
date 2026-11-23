@@ -17,6 +17,19 @@ max_accel: [0.1, 0.6]
 max_joint_speed: 0.3
 max_joint_accel: 0.5
 
+# MIT mode: each tick sends target, velocity, stiffness (Nm/rad), damping
+# (Nm·s/rad) and the model's gravity torque; `csp` is the motors' own position
+# loop, which buzzes under load. Gains are one value or a map by joint name.
+control_mode: mit
+mit_kp: 80.0
+mit_kd: 4.0
+gravity_feedforward: 1.0
+# What hangs on the flange: kg, and its centre of mass in metres in the flange
+# frame (+z out of the flange). These are Gripper 1 (Robstride)'s, from its
+# model; set 0 for a bare flange.
+tool_mass_kg: 0.34
+tool_com: [0.001, -0.007, 0.073]
+
 # Joint ranges are the MJCF's, in radians, with every joint at 0 in the folded
 # rest pose; `solarian calibrate` captures that pose and derives each window.
 # They are read from the MJCF, not this file. sim_drive_mode stays 0: IK maps

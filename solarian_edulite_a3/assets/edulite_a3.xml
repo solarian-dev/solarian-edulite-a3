@@ -15,15 +15,18 @@
   </default>
   <worldbody>
     <body name="root" pos="0 0 0" quat="1 0 0 0" childclass="edulite_a3">
+      <inertial pos="-7.85527e-05 4.66057e-08 0.0336468" mass="0.498832" fullinertia="0.000365137 0.000371872 0.000388475 1.33362e-08 1.36721e-06 5.96802e-10" />
       <geom class="visual" pos="2.3613456e-09 -0.000642857 0.059" quat="0.70710548 0 0 0.70710808" mesh="L1_base" material="L1_base_material" />
       <geom class="collision" pos="2.3613456e-09 -0.000642857 0.059" quat="0.70710548 0 0 0.70710808" mesh="L1_base" material="L1_base_material" />
       <geom class="visual" pos="2.3615036e-09 -0.0006429 0.059" quat="0.70710548 0 0 0.70710808" mesh="RS00_L1" material="RS00_L1_material" />
       <geom class="collision" pos="2.3615036e-09 -0.0006429 0.059" quat="0.70710548 0 0 0.70710808" mesh="RS00_L1" material="RS00_L1_material" />
       <body name="l2_base" pos="0 0 0.06" quat="0.70710548 5.5961862e-16 -5.1617356e-16 0.70710808">
+        <inertial pos="-0.00232763 0.00161974 -0.0421389" mass="0.105244" fullinertia="0.000163151 9.80822e-05 0.000118753 3.25943e-06 -1.01303e-05 1.04567e-05" />
         <joint name="shoulder_pan" type="hinge" axis="0 0 -1" range="-2.79253 2.79253" />
         <geom class="visual" pos="-0.000642857 0 -0.001" quat="1 0 0 0" mesh="L2_base" material="L2_base_material" />
         <geom class="collision" pos="-0.000642857 0 -0.001" quat="1 0 0 0" mesh="L2_base" material="L2_base_material" />
         <body name="rs00_l2" pos="-0.00964286 -0.0265 0.069" quat="1 -1.989335e-17 8.6963e-18 3.376375e-17">
+          <inertial pos="0.0949813 0.0258742 0.00165255" mass="0.836196" fullinertia="0.000421433 0.00707892 0.00708114 -2.34065e-08 -0.000116239 -3.21133e-09" />
           <joint name="shoulder_lift" type="hinge" axis="0 -1 0" range="-4.22926e-15 3.4383" />
           <geom class="visual" pos="0.0102203 0.0265 -0.0698323" quat="0.99996192 0 -0.0087265392 0" mesh="RS00_L2" material="RS00_L2_material" />
           <geom class="collision" pos="0.0102203 0.0265 -0.0698323" quat="0.99996192 0 -0.0087265392 0" mesh="RS00_L2" material="RS00_L2_material" />
@@ -32,10 +35,12 @@
           <geom class="visual" pos="0.010220318 0.0265 -0.069832194" quat="0.99996192 -2.5965494e-16 -0.0087265392 -5.1378943e-16" mesh="RS00_L3" material="RS00_L3_material" />
           <geom class="collision" pos="0.010220318 0.0265 -0.069832194" quat="0.99996192 -2.5965494e-16 -0.0087265392 -5.1378943e-16" mesh="RS00_L3" material="RS00_L3_material" />
           <body name="l4_right" pos="0.18997108 -2.0122792e-16 0.0033160317" quat="0.99996192 -1.6900597e-16 -0.0087265392 -8.1087419e-16">
+            <inertial pos="-0.0743354 0.029768 -0.0535742" mass="0.262025" fullinertia="0.00033354 0.00133147 0.00130151 9.893e-06 -0.000183198 -1.18601e-05" />
             <joint name="elbow_flex" type="hinge" axis="0 1 0" range="0 3.62854" />
             <geom class="visual" pos="-0.181 0.0265 -0.07" quat="1 0 0 0" mesh="L4_right" material="L4_right_material" />
             <geom class="collision" pos="-0.181 0.0265 -0.07" quat="1 0 0 0" mesh="L4_right" material="L4_right_material" />
             <body name="el05_l4" pos="-0.185 0.0045 0.064" quat="0.93263907 -1.6279062e-17 -0.3608107 1.2369166e-16">
+              <inertial pos="-0.0110673 0.0223686 0.0368283" mass="0.55715" fullinertia="0.000936833 0.000993465 0.000245619 -2.2885e-06 0.000222424 7.67806e-06" />
               <joint name="wrist_flex" type="hinge" axis="0 -1 -6.12323e-17" range="-1.40848 1.48004" />
               <geom class="visual" pos="0.004 0.022 -0.134" quat="1 0 0 0" mesh="EL05_L4" material="EL05_L4_material" />
               <geom class="collision" pos="0.004 0.022 -0.134" quat="1 0 0 0" mesh="EL05_L4" material="EL05_L4_material" />
@@ -46,6 +51,7 @@
               <geom class="visual" pos="-0.047584052 0.022 -0.12533059" quat="0.98078529 -4.1094276e-17 0.19509028 1.5073883e-16" mesh="EL05_L5" material="EL05_L5_material" />
               <geom class="collision" pos="-0.047584052 0.022 -0.12533059" quat="0.98078529 -4.1094276e-17 0.19509028 1.5073883e-16" mesh="EL05_L5" material="EL05_L5_material" />
               <body name="l6_link" pos="-0.030912907 0.022 0.053935445" quat="0.98078529 -1.1563461e-16 0.19509028 -1.1807934e-16">
+                <inertial pos="0.00523238 5.3098e-07 0.0216139" mass="0.0392349" fullinertia="1.45571e-05 1.4787e-05 6.35973e-06 -2.29097e-11 -4.08594e-06 -2.99225e-11" />
                 <joint name="wrist_yaw" type="hinge" axis="0 0 1" range="-1.5708 1.5708" />
                 <geom class="visual" pos="0.0532 2.78535e-16 -0.173" quat="1 0 0 0" mesh="L6_link" material="L6_link_material" />
                 <geom class="collision" pos="0.0532 2.78535e-16 -0.173" quat="1 0 0 0" mesh="L6_link" material="L6_link_material" />
