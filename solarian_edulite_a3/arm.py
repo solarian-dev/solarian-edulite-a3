@@ -135,9 +135,6 @@ class EduliteA3ArmModule(ArmModule):
         self.disable_torque(IK_JOINTS)
         bus = self._joint_bus()
         if self.cfg.control_mode == "mit" and hasattr(bus, "use_motion_control"):
-            self.configure_components(
-                {"run_mode": int(RunMode.MOTION_CONTROL)}, component_names=IK_JOINTS
-            )
             kp, kd = self._per_joint(self.cfg.mit_kp), self._per_joint(self.cfg.mit_kd)
             bus.use_motion_control(
                 {name: (kp[name], kd[name]) for name in IK_JOINTS},

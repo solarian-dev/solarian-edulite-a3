@@ -25,9 +25,10 @@ mit_kp: 80.0
 mit_kd: 4.0
 gravity_feedforward: 1.0
 # What hangs on the flange: kg, and its centre of mass in metres in the flange
-# frame (+z out of the flange). These are Gripper 1 (Robstride)'s, from its
-# model; set 0 for a bare flange.
-tool_mass_kg: 0.34
+# frame (+z out of the flange). These are Gripper 1 (Robstride)'s: the centre of
+# mass from its model, the mass fitted to an arm's holding torques. Set 0 for a
+# bare flange.
+tool_mass_kg: 0.5
 tool_com: [0.001, -0.007, 0.073]
 
 # Joint ranges are the MJCF's, in radians, with every joint at 0 in the folded
