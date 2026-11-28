@@ -6,7 +6,7 @@ EDULITE A3 arm and gripper modules for the Solarian robotics framework.
 
 from pathlib import Path
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 #: Directory holding this plugin's simulation assets (MJCF + onshape config).
 ASSETS_DIR = Path(__file__).resolve().parent / "assets"

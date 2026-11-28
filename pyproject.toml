@@ -1,6 +1,6 @@
 [project]
 name = "solarian-edulite-a3"
-version = "0.1.0"
+version = "0.1.1"
 description = "EDULITE A3 arm and gripper modules for the Solarian robotics framework"
 authors = [
     {name = "Raul Garreta", email = "raul@solarian.dev"}
@@ -10,15 +10,15 @@ license = {text = "Apache-2.0"}
 classifiers = ["License :: OSI Approved :: Apache Software License"]
 requires-python = ">=3.10"
 dependencies = [
-    "solarian>=0.6.0",
-    "solarian-robstride>=0.1.0",
+    "solarian>=0.7.0",
+    "solarian-robstride>=0.1.1",
 ]
 
 [project.optional-dependencies]
 # The servo SDKs, for the machine wired to the arm. Without them the modules
 # still import, so a relay or controller can build the robot's schema.
 hardware = [
-    "solarian-robstride[hardware]>=0.1.0",
+    "solarian-robstride[hardware]>=0.1.1",
 ]
 
 [build-system]
