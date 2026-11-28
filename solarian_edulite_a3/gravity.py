@@ -8,6 +8,12 @@ import numpy as np
 
 from solarian_edulite_a3 import ARM_MJCF_PATH
 
+#: rad from a joint limit. Closer than STOP_REST to a limit that gravity presses
+#: the link against, the stop carries the link and no torque is sent; it fades
+#: back in linearly by STOP_CLEAR, so leaving the stop lifts the link smoothly.
+STOP_REST = 0.01
+STOP_CLEAR = 0.05
+
 
 class GravityFeedforward:
     """Joint torques (Nm) that hold the arm, and a tool on its flange, against gravity.
@@ -19,6 +25,11 @@ class GravityFeedforward:
     Positions arrive normalized -100..100, mapped linearly onto each joint's
     model limits (rad) as the IK maps them. Torques are in the model's joint
     sign; the bus applies each motor's ``drive_mode``.
+
+    The model has no stops, so folded at rest it would hold the forearm up off
+    its stop with the full load. A joint whose target sits on a limit that
+    gravity presses it against gets nothing instead: the model's limits are the
+    arm's hard stops, as the zero pose calibration assumes.
     """
 
     def __init__(
@@ -54,7 +65,12 @@ class GravityFeedforward:
         for name, (lo, hi) in self.limits.items():
             v = min(100.0, max(-100.0, float(normalized[name])))
             q[name] = (v + 100.0) / 200.0 * (hi - lo) + lo
-        return self.torques(q)
+        tau = self.torques(q)
+        for name, (lo, hi) in self.limits.items():
+            # A positive holding torque means gravity pulls the joint toward lo.
+            gap = q[name] - lo if tau[name] > 0 else hi - q[name]
+            tau[name] *= min(1.0, max(0.0, (gap - STOP_REST) / (STOP_CLEAR - STOP_REST)))
+        return tau
 
     def torques(self, q: dict[str, float]) -> dict[str, float]:
         """Holding torque per joint at joint angles ``q`` (model rad)."""

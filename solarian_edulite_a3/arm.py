@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import logging
+import math
 from typing import Literal
 
 from solarian.core.actuator_module import SPEED_BACKSTOP_MARGIN
 from solarian.core.arm_module import ArmModule
 from solarian.core.calibration import MotorCalibration
 from solarian.core.configs import ModuleConfig
+from solarian.core.data import PosData
 from solarian.core.ik import CartesianIKActuator, MinkIK
 from solarian_edulite_a3 import ARM_MJCF_PATH
 from solarian_edulite_a3.gravity import GravityFeedforward
@@ -199,8 +201,28 @@ class EduliteA3ArmModule(ArmModule):
         window around it. Each joint starts from the ``drive_mode`` in its yaml
         (0 if unset); the sign check that ``solarian calibrate`` runs next
         confirms or flips it against the live sim.
+
+        The offsets only hold across power cycles once every motor reports
+        -pi..pi after power-up, so a motor still on its factory 0..2pi is
+        switched first, and the pose is captured after the power cycle that
+        makes the switch take effect.
         """
         self.disable_torque(IK_JOINTS)
+        bus = self._joint_bus()
+        changed = bus.centre_power_up_positions(IK_JOINTS)
+        if changed:
+            print(
+                "\n=== Step 0: Power-up position range ===\n"
+                f"{', '.join(changed)} reported 0..2pi after power-up, so a joint resting\n"
+                "just below its zero came up a full turn off. They are now set to -pi..pi\n"
+                "and saved, which applies from the next power-up.\n"
+                "Leave the arm folded at rest, switch the motor power off and on again."
+            )
+            input("Press ENTER once the motors are powered again...")
+            bus.disconnect()
+            bus.connect()
+            if still := bus.centre_power_up_positions(IK_JOINTS):
+                raise RuntimeError(f"{', '.join(still)} did not keep zero_sta=1 across the power cycle")
         print(
             "\n=== Step 1: Zero pose ===\n"
             "Torque is off: support the arm, it is limp.\n"
@@ -211,7 +233,24 @@ class EduliteA3ArmModule(ArmModule):
         )
         input("Press ENTER when the arm rests folded...")
 
-        offsets = self._joint_bus().set_half_turn_homings(IK_JOINTS)
+        # Folded is every joint's zero and no joint travels past pi, so a reading
+        # beyond pi is a turn the motor counted before this power-up.
+        mid = (PROTOCOL_CPR - 1) / 2
+        raw = bus.read(PosData, IK_JOINTS, normalize=False)
+        turned = {
+            name: (raw[name] - mid) / self._ticks_per_rad(name)
+            for name in IK_JOINTS
+            if abs(raw[name] - mid) > math.pi * self._ticks_per_rad(name)
+        }
+        if turned:
+            readings = ", ".join(f"{name} {rad:+.2f} rad" for name, rad in turned.items())
+            raise RuntimeError(
+                f"Folded, every joint should read within +-pi, but {readings}: the motors "
+                "kept a turn count from before. Leave the arm folded, switch the motor "
+                "power off for at least 10 s, and run the calibration again."
+            )
+
+        offsets = bus.set_half_turn_homings(IK_JOINTS)
         calibration = {
             name: MotorCalibration(
                 id=int(self.actuators[name].cfg.id),

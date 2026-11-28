@@ -10,7 +10,7 @@ import pytest
 
 from solarian_edulite_a3 import ARM_MJCF_PATH
 from solarian_edulite_a3.arm import IK_JOINTS
-from solarian_edulite_a3.gravity import GravityFeedforward
+from solarian_edulite_a3.gravity import STOP_CLEAR, STOP_REST, GravityFeedforward
 
 MODEL = mujoco.MjModel.from_xml_path(ARM_MJCF_PATH)
 LIMITS = {name: tuple(MODEL.jnt_range[MODEL.joint(name).id]) for name in IK_JOINTS}
@@ -67,8 +67,39 @@ def test_tool_adds_its_weight_times_the_lever_arm():
 def test_normalized_positions_map_onto_the_model_limits():
     gravity = GravityFeedforward(LIMITS)
     assert gravity(to_normalized(REACHING)) == pytest.approx(gravity.torques(REACHING))
-    lo = {name: LIMITS[name][0] for name in IK_JOINTS}
-    assert gravity(dict.fromkeys(IK_JOINTS, -100.0)) == pytest.approx(gravity.torques(lo))
+    hi = {name: LIMITS[name][1] for name in IK_JOINTS}
+    sent = gravity(dict.fromkeys(IK_JOINTS, 100.0))
+    model = gravity.torques(hi)
+    # At its upper limit gravity pulls the elbow back toward its lower one.
+    assert model["elbow_flex"] > 0.5
+    assert sent["elbow_flex"] == pytest.approx(model["elbow_flex"])
+
+
+def test_folded_on_the_stops_sends_no_torque_to_the_joints_resting_on_them():
+    gravity = GravityFeedforward(LIMITS, tool_mass_kg=0.5, tool_com=[0, 0, 0.07])
+    model = gravity.torques(FOLDED)
+    sent = gravity(to_normalized(FOLDED))
+    assert model["elbow_flex"] > 1.0
+    assert sent["shoulder_lift"] == 0.0
+    assert sent["elbow_flex"] == 0.0
+    # Mid-range, nothing to rest on: still held.
+    assert sent["wrist_flex"] == pytest.approx(model["wrist_flex"])
+
+
+@pytest.mark.parametrize(
+    "gap, share",
+    [
+        (0.5 * STOP_REST, 0.0),
+        (0.5 * (STOP_REST + STOP_CLEAR), 0.5),
+        (STOP_CLEAR, 1.0),
+        (0.5, 1.0),
+    ],
+)
+def test_leaving_a_stop_fades_the_torque_back_in(gap, share):
+    gravity = GravityFeedforward(LIMITS)
+    q = {**FOLDED, "elbow_flex": LIMITS["elbow_flex"][0] + gap}
+    sent = gravity(to_normalized(q))["elbow_flex"]
+    assert sent == pytest.approx(share * gravity.torques(q)["elbow_flex"])
 
 
 def test_a_partial_pose_gives_no_torque():

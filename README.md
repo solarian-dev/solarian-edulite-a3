@@ -95,6 +95,10 @@ MIT fields (ignored in CSP):
   Raise Kp for a stiffer hold; raise Kd if it overshoots.
 - `gravity_feedforward` (default 1.0): the share of the model's gravity torque
   sent. 0 leaves gravity to Kp, and the arm sags until the error pays for it.
+  A joint whose target is on a limit that gravity presses it against gets none:
+  folded at rest, the upper arm and forearm lie on their stops, and holding them
+  a hair off with the model's torque would cost the elbow its full load. The
+  torque fades back in over the first 0.05 rad off the stop.
 - `tool_mass_kg` (default 0) and `tool_com` (m, flange frame, +z out of the
   flange): whatever is bolted to the flange, which the arm's model does not
   contain. Without it the arm droops by the tool's weight over Kp.
@@ -111,13 +115,25 @@ CSP field (ignored in MIT):
 
 ## Calibration
 
-The joints report multi-turn absolute position, so there is no range sweep.
+The joints report absolute position, so there is no range sweep.
 `solarian calibrate` asks for the arm folded at rest (upper arm lowered onto
 its stop, forearm folded back over it, wrist straight, pan and roll centred),
 which is every model joint at 0. That pose sets each joint's offset, and the MJCF limits set the window
 around it. The sign check that follows confirms each joint's direction against
 the live sim; the template's `drive_mode` values are first guesses from the
 vendor SDK.
+
+A motor counts turns only while it is powered. After power-up its first
+reading falls in the window its `zero_sta` parameter picks: 0..2pi from the
+factory, or -pi..pi. On 0..2pi a joint resting a hair below its zero, as the
+folded pose puts pan and yaw, powers up a full turn off its offset, and the
+next command spins it back. So calibration first sets every joint to -pi..pi
+and saves it to the motor, as the vendor's MotorStudio does, and when it had
+to change one it asks you to switch the motor power off and on before it
+captures the pose. Lift and elbow travel a little past pi, so power the arm up
+folded. A switch-off too short to reset a motor keeps its turn count, so when
+any joint reads beyond pi at the folded pose, calibration stops and asks for a
+longer power cycle rather than save an offset a turn off.
 
 Torque is off while calibrating and the arm is limp: support it.
 
